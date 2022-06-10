@@ -89,9 +89,10 @@ Java_sun_nio_ch_DatagramChannelImpl_disconnect0(JNIEnv *env, jobject this,
 
 #ifdef __solaris__
     rv = connect(fd, 0, 0);
-#endif
-
-#if defined(__linux__) || defined(_ALLBSD_SOURCE) || defined(_AIX)
+#elif defined(__APPLE__)
+    // On macOS systems we use disconnectx
+    rv = disconnectx(fd, SAE_ASSOCID_ANY, SAE_CONNID_ANY);
+#elif defined(__linux__) || defined(_ALLBSD_SOURCE) || defined(_AIX)
     {
         int len;
         SOCKADDR sa;
